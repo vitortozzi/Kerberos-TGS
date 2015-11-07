@@ -63,7 +63,7 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS{
              */
             
             String clientID = aSTicket.clientID;
-            String serviceID = aSTicket.serviceID;
+            String serviceID = "servidor";
             String randomNumber = tGSRequest.randomNumber;
             
             String newSessionKey = HashUtils.generateSessionKey(clientID+serviceID);

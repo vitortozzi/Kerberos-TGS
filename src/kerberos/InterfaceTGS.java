@@ -6,11 +6,15 @@
 package kerberos;
 
 import java.rmi.Remote;
+import java.rmi.RemoteException;
 
 /**
  *
  * @author Vitor Tozzi
  */
 public interface InterfaceTGS extends Remote {
+    
+    public void readTicketFromClient(String filepath) throws RemoteException;
+    public String sayHello() throws RemoteException;
     
 }

@@ -50,7 +50,7 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
 
             String sessionKey = aSTicket.sessionKey;
 
-            String tgsRequestFilePath = "C:\\Kerberos\\TGS\\clientRequest.des";
+            String tgsRequestFilePath = "F:\\Kerberos\\TGS\\clientRequest.des";
             fileUtils = new FileUtils(sessionKey);
             TGSRequest tGSRequest = (TGSRequest) fileUtils.readEncryptedObject(tgsRequestFilePath);
 
@@ -74,7 +74,7 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
 
                 // Objeto criado para ser encriptado e salvo no cliente
                 TGSResponse tGSResponse = new TGSResponse(newSessionKey, randomNumber);
-                String tgsResponseFilepath = "C:\\Kerberos\\Client\\tgsResponse.des";
+                String tgsResponseFilepath = "F:\\Kerberos\\Client\\tgsResponse.des";
                 System.out.println("Responde gerado no TGS");
                 tGSResponse.print();
 
@@ -86,7 +86,7 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
                  */
                 Date timestamp = TimeUtils.addHours(TimeUtils.getDate(), 2);
                 ServerTicket serverTicket = new ServerTicket(clientID, timestamp, serviceID, newSessionKey);
-                String serverTicketToClientFilepah = "C:\\Kerberos\\Client\\serverTicket.des";
+                String serverTicketToClientFilepah = "F:\\Kerberos\\Client\\serverTicket.des";
 
                 fileUtils = new FileUtils(senhaServer);
                 fileUtils.writeEncryptedObject(serverTicket, serverTicketToClientFilepah);

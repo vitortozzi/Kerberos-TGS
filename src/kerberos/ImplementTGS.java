@@ -5,6 +5,7 @@
  */
 package kerberos;
 
+import database.Database;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.rmi.RemoteException;
@@ -33,8 +34,8 @@ import utils.TimeUtils;
  */
 public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
 
-    String senhaTGS = "tgs12345";
-    String senhaServer = "server12";
+    String senhaTGS = "tgs";
+    String senhaServer;
 
     public ImplementTGS() throws RemoteException {
         super();
@@ -42,14 +43,22 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
 
     @Override
     public void readTicketFromClient(String filepath) {
-
+                
+        
         FileUtils fileUtils;
         try {
-            fileUtils = new FileUtils(senhaTGS);
+            /**
+             * Descriptografa o ticket vindo do AS com a senha do TGS pata recuperar a chave de sessão
+             */
+            fileUtils = new FileUtils(HashUtils.getHash(senhaTGS));
             ASTicket aSTicket = (ASTicket) fileUtils.readEncryptedObject(filepath);
 
             String sessionKey = aSTicket.sessionKey;
 
+            
+            /**
+             * Utiliza a chave de sessão criada pelo AS para descriptografar a requisição do cliente
+             */
             String tgsRequestFilePath = "F:\\Kerberos\\TGS\\clientRequest.des";
             fileUtils = new FileUtils(sessionKey);
             TGSRequest tGSRequest = (TGSRequest) fileUtils.readEncryptedObject(tgsRequestFilePath);
@@ -70,9 +79,10 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
                 String serviceID = "servidor";
                 String randomNumber = tGSRequest.randomNumber;
 
+                //TODO: utilizar numero aleatorio para criar esta chave
                 String newSessionKey = HashUtils.generateSessionKey(clientID + serviceID);
 
-                // Objeto criado para ser encriptado e salvo no cliente
+                // Objeto criado para ser encriptado e salvo no cliente      
                 TGSResponse tGSResponse = new TGSResponse(newSessionKey, randomNumber);
                 String tgsResponseFilepath = "F:\\Kerberos\\Client\\tgsResponse.des";
                 System.out.println("Responde gerado no TGS");
@@ -88,7 +98,7 @@ public class ImplementTGS extends UnicastRemoteObject implements InterfaceTGS {
                 ServerTicket serverTicket = new ServerTicket(clientID, timestamp, serviceID, newSessionKey);
                 String serverTicketToClientFilepah = "F:\\Kerberos\\Client\\serverTicket.des";
 
-                fileUtils = new FileUtils(senhaServer);
+                fileUtils = new FileUtils(HashUtils.getHash("server"));
                 fileUtils.writeEncryptedObject(serverTicket, serverTicketToClientFilepah);
             }
 
